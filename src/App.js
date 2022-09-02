@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import days from "./data";
 const colors = [
   "papayawhip",
@@ -17,6 +17,22 @@ function App() {
   const [today, setToday] = useState({});
   const [vibe, setVibe] = useState("");
 
+  function getData() {
+    // Commented out to avoid cluttering the console
+    // console.log("I am getting data");
+  }
+
+  function getFeaturedDog() {
+    fetch("https://dog.ceo/api/breeds/image/random")
+      .then((response) => response.json())
+      .then((json) => {
+        setDog(json);
+      })
+      .catch((err) => {
+        console.log("error fetching image");
+      });
+  }
+
   function handleOnChange(event) {
     setVibe(event.target.value);
   }
@@ -24,6 +40,31 @@ function App() {
   function updateIndex() {
     setIndex((index + 1) % days.length);
   }
+
+  useEffect(() => {
+    getData();
+  });
+
+  useEffect(() => {
+    setNumber(Math.random());
+  }, []);
+
+  useEffect(() => {
+    setToday(days[index]);
+  }, [index]);
+
+  useEffect(() => {
+    setColor(colors[index]);
+  }, [today.month]);
+
+  // Commented out to avoid cluttering the console
+  // useEffect(() => {
+  //   console.log(vibe);
+  // }, [vibe]);
+
+  useEffect(() => {
+    getFeaturedDog();
+  }, []);
 
   return (
     <div className="App">
@@ -47,7 +88,7 @@ function App() {
           <h5>{vibe}</h5>
         </div>
         <div className="dog">
-          <button>Change dog</button>
+          <button onClick={getFeaturedDog}>Change dog</button>
           <h2>Featured dog:</h2>
           <img src={dog.message} alt="Featured Dog" />
         </div>
